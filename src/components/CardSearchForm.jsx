@@ -13,9 +13,7 @@ export default function CardSearchForm() {
     lugar: '',
     startDate: '',
     endDate: '',
-    sintesis: '',
-    userId: '',
-  });
+    });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,8 +38,6 @@ export default function CardSearchForm() {
       <input name="lugar" placeholder="Lugar" value={form.lugar} onChange={handleChange} />
       <input name="startDate" type="date" value={form.startDate} onChange={handleChange} />
       <input name="endDate" type="date" value={form.endDate} onChange={handleChange} />
-      <input name="sintesis" placeholder="Síntesis" value={form.sintesis} onChange={handleChange} />
-      <input name="userId" placeholder="ID de usuario" value={form.userId} onChange={handleChange} />
       <button type="submit">Buscar</button>
     </form>
   );

@@ -2,11 +2,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
+// 🔁 Cargar datos persistidos desde localStorage
+const storedToken = localStorage.getItem('token');
+const storedUser = localStorage.getItem('user');
+
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/login', credentials);
+      const response = await api.post('/api/signin', credentials);
+
+      // ✅ Guardar en localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
       return response.data;
     } catch (err) {
       const fallback = {
@@ -21,8 +30,8 @@ export const loginUser = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: null,
-    token: null,
+    user: storedUser ? JSON.parse(storedUser) : null,
+    token: storedToken || null,
     loading: false,
     error: null,
   },
@@ -30,6 +39,10 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+
+      // 🧹 Limpiar localStorage
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     },
   },
   extraReducers: (builder) => {

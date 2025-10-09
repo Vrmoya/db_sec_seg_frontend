@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCardBlocks } from '../redux/slices/cardsSlice';
 import CardBlock from '../components/CardBlock';
 import CardSearchForm from '../components/CardSearchForm';
-
-
-
+import Header from '../components/Header'; // ✅ nuevo import
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -17,13 +15,16 @@ export default function Dashboard() {
   }, [dispatch]);
 
   return (
-    <div>
-      <h2>Validación de registros</h2>
-      <CardSearchForm />
-      {loading && <p>Cargando bloques...</p>}
-      {blocks.map((block) => (
-        <CardBlock key={block.id} block={block} />
-      ))}
-    </div>
+    <>
+      <Header /> {/* ✅ encabezado con nombre y logout */}
+      <div style={{ padding: '2rem' }}>
+        <h2>Validación de registros</h2>
+        <CardSearchForm />
+        {loading && <p>Cargando bloques...</p>}
+        {blocks.map((block) => (
+          <CardBlock key={block.id} block={block} />
+        ))}
+      </div>
+    </>
   );
 }

@@ -9,7 +9,11 @@ export const loginUser = createAsyncThunk(
       const response = await api.post('/auth/login', credentials);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      const fallback = {
+        message: 'Error de conexión con el servidor',
+        status: err?.response?.status || 500,
+      };
+      return rejectWithValue(err?.response?.data || fallback);
     }
   }
 );
@@ -41,7 +45,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message || 'Error inesperado';
       });
   },
 });

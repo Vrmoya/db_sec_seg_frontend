@@ -1,13 +1,12 @@
-// src/services/api.js
 import axios from 'axios';
-import { store } from '../redux/store';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api', // ajustá según tu backend
+  baseURL: 'http://localhost:3000/',
 });
 
 api.interceptors.request.use((config) => {
-  const token = store.getState().auth.token;
+  // ✅ Accedé al store solo si ya está disponible globalmente
+  const token = window.__APP_STORE__?.getState?.().auth?.token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -7,21 +7,23 @@ import { useNavigate } from 'react-router-dom';
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [localError, setLocalError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLocalError(null);
+    setErrorMessage(null);
 
     try {
       await dispatch(loginUser({ email, password })).unwrap();
       navigate('/dashboard');
     } catch (err) {
-      setLocalError(err?.message || 'Error inesperado al iniciar sesión');
+      const fallback = err?.message || err?.error || 'Error inesperado al iniciar sesión';
+      setErrorMessage(fallback);
+      console.error('Login error:', err);
     }
   };
 
@@ -48,9 +50,9 @@ export default function Login() {
         </button>
       </form>
 
-      {(localError || error) && (
-        <p className="error-message">
-          {localError || error}
+      {errorMessage && (
+        <p className="error-message" style={{ color: 'red', marginTop: '1rem' }}>
+          {errorMessage}
         </p>
       )}
     </div>

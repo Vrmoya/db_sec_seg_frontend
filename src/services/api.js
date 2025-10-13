@@ -1,16 +1,21 @@
-import axios from 'axios';
+// src/services/api.js
+import baseApi from './baseApi';
+import { store } from '../redux/store';
+import { logout } from '../redux/slices/authSlice';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3000/',
-});
+baseApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
 
-api.interceptors.request.use((config) => {
-  // ✅ Accedé al store solo si ya está disponible globalmente
-  const token = window.__APP_STORE__?.getState?.().auth?.token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (status === 401 || status === 403) {
+      console.warn('Sesión inválida o expirada. Redirigiendo al login...');
+      store.dispatch(logout());
+      window.location.href = '/login';
+    }
+
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
-export default api;
+export default baseApi;

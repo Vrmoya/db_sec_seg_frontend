@@ -1,6 +1,7 @@
 // src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../services/api';
+import baseApi from '../../services/baseApi';
+
 
 // 🔁 Cargar datos persistidos desde localStorage
 const storedToken = localStorage.getItem('token');
@@ -10,7 +11,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/signin', credentials);
+      const response = await baseApi.post('/api/signin', credentials);
 
       // ✅ Guardar en localStorage
       localStorage.setItem('token', response.data.token);
@@ -27,22 +28,26 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+const initialState = {
+  user: storedUser ? JSON.parse(storedUser) : null,
+  token: storedToken || null,
+  loading: false,
+  error: null,
+};
+
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    user: storedUser ? JSON.parse(storedUser) : null,
-    token: storedToken || null,
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
     logout: (state) => {
       state.user = null;
       state.token = null;
-
-      // 🧹 Limpiar localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+    },
+    setAuth: (state, action) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     },
   },
   extraReducers: (builder) => {
@@ -63,5 +68,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
-export default authSlice.reducer;
+export const { logout, setAuth } = authSlice.actions;
+export default authSlice.reducer; // ✅ solo export default

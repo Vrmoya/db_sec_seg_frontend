@@ -1,10 +1,12 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import EditorDashboard from './pages/EditorDashboard';
+import UsersDashboard from './pages/UsersDashboard';
 import Unauthorized from './pages/Unauthorized';
 
 function ProtectedRoute({ children, allowedRoles }) {
@@ -56,6 +58,15 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['editor', 'admin']}>
               <EditorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <UsersDashboard />
             </ProtectedRoute>
           }
         />

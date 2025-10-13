@@ -1,15 +1,18 @@
 // src/redux/slices/cardsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../services/api';
+import baseApi from '../../services/baseApi';
+
 
 export const fetchCardBlocks = createAsyncThunk(
   'cards/fetchCardBlocks',
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const res = await api.get('/cards/blocks', { params: filters });
+      const res = await baseApi.get('/cards', { params: filters });
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+  return rejectWithValue(
+  err?.response?.data?.message || 'Acceso denegado o error inesperado'
+);
     }
   }
 );
@@ -18,10 +21,10 @@ export const validateBlock = createAsyncThunk(
   'cards/validateBlock',
   async (blockId, { rejectWithValue }) => {
     try {
-      const res = await api.post(`/cards/validate/${blockId}`);
+      const res = await baseApi.post(`/cards/validate/${blockId}`);
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err?.response?.data || { message: 'Error al validar bloque' });
     }
   }
 );
@@ -44,6 +47,11 @@ const cardsSlice = createSlice({
       .addCase(fetchCardBlocks.fulfilled, (state, action) => {
         state.loading = false;
         state.blocks = action.payload;
+      })
+      .addCase(fetchCardBlocks.rejected, (state, action) => {
+        state.loading = false;
+        state.blocks = [];
+        state.error = action.payload?.message || 'Error al cargar bloques';
       })
       .addCase(validateBlock.fulfilled, (state, action) => {
         state.validated.push(action.payload.blockId);

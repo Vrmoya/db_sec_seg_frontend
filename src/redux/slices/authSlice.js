@@ -1,9 +1,7 @@
 // src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import baseApi from '../../services/baseApi';
+import baseApi from '../../services/baseApiCore'; // ✅ usamos baseApiCore sin interceptores
 
-
-// 🔁 Cargar datos persistidos desde localStorage
 const storedToken = localStorage.getItem('token');
 const storedUser = localStorage.getItem('user');
 
@@ -13,7 +11,6 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await baseApi.post('/api/signin', credentials);
 
-      // ✅ Guardar en localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
@@ -69,4 +66,4 @@ const authSlice = createSlice({
 });
 
 export const { logout, setAuth } = authSlice.actions;
-export default authSlice.reducer; // ✅ solo export default
+export default authSlice.reducer;

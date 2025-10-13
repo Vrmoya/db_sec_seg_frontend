@@ -17,9 +17,22 @@ export default function Login() {
     e.preventDefault();
     setErrorMessage(null);
 
+    // ✅ Validaciones básicas
+    if (!email.includes('@') || !email.includes('.')) {
+      setErrorMessage('El correo electrónico no es válido.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMessage('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
     try {
       await dispatch(loginUser({ email, password })).unwrap();
-      navigate('/dashboard');
+      const lastRoute = localStorage.getItem("lastRoute") || "/dashboard";
+      localStorage.removeItem("lastRoute");
+      navigate(lastRoute);
     } catch (err) {
       const fallback = err?.message || err?.error || 'Error inesperado al iniciar sesión';
       setErrorMessage(fallback);

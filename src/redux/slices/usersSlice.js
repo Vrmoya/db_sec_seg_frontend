@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import baseApi from '../../services/baseApi';
 
-
 // 🔄 Obtener todos los usuarios
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
-  async (_, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await baseApi.get('/api/users');
+      const response = await baseApi.get('/api/users', { params });
       return response.data;
     } catch (err) {
       return rejectWithValue(err?.response?.data || { message: 'Error al cargar usuarios' });
@@ -32,6 +31,7 @@ const usersSlice = createSlice({
   name: 'users',
   initialState: {
     list: [],
+    total: 0,
     loading: false,
     error: null,
   },
@@ -44,11 +44,28 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload;
+
+        const payload = action.payload;
+
+        // Si el payload es un objeto con users
+        if (Array.isArray(payload.users)) {
+          state.list = payload.users;
+          state.total = payload.totalPages ? payload.totalPages * 10 : payload.users.length;
+        }
+        // Si el payload es directamente un array
+        else if (Array.isArray(payload)) {
+          state.list = payload;
+          state.total = payload.length;
+        }
+        // Si el payload no es válido
+        else {
+          state.list = [];
+          state.total = 0;
+        }
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message;
+        state.error = action.payload?.message || 'Error al cargar usuarios';
       })
       .addCase(toggleUser.fulfilled, (state, action) => {
         const updated = action.payload;

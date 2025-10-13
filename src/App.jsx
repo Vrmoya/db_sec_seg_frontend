@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import EditorDashboard from './pages/EditorDashboard';
 import UsersDashboard from './pages/UsersDashboard';
 import Unauthorized from './pages/Unauthorized';
+import CardDetail from './components/CardDetail'; // ✅ NUEVO
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { token, user } = useSelector((state) => state.auth);
@@ -67,6 +68,16 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <UsersDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 📦 Detalle de card */}
+        <Route
+          path="/cards/:id"
+          element={
+            <ProtectedRoute allowedRoles={['viewer', 'editor', 'admin']}>
+              <CardDetail />
             </ProtectedRoute>
           }
         />

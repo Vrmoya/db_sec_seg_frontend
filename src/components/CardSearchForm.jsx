@@ -1,44 +1,85 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchCardBlocks } from '../redux/slices/cardsSlice';
 
-export default function CardSearchForm() {
-  const dispatch = useDispatch();
-  const [form, setForm] = useState({
-    type: '',
+export default function CardSearchForm({ onSearch }) {
+  const [filters, setFilters] = useState({
+    dominio: '',
     marca: '',
     modelo: '',
-    dominio: '',
     color: '',
-    lugar: '',
-    startDate: '',
-    endDate: '',
-    });
+    fechaInicio: '',
+    fechaFin: '',
+  });
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    const filtros = Object.fromEntries(
-      Object.entries(form).filter(([, v]) => v !== '')
-    );
-    dispatch(fetchCardBlocks(filtros));
+    onSearch(filters);
+  };
+
+  const handleReset = () => {
+    const cleared = {
+      dominio: '',
+      marca: '',
+      modelo: '',
+      color: '',
+      fechaInicio: '',
+      fechaFin: '',
+    };
+    setFilters(cleared);
+    onSearch(cleared);
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-      <input name="type" placeholder="Tipo" value={form.type} onChange={handleChange} />
-      <input name="marca" placeholder="Marca" value={form.marca} onChange={handleChange} />
-      <input name="modelo" placeholder="Modelo" value={form.modelo} onChange={handleChange} />
-      <input name="dominio" placeholder="Dominio" value={form.dominio} onChange={handleChange} />
-      <input name="color" placeholder="Color" value={form.color} onChange={handleChange} />
-      <input name="lugar" placeholder="Lugar" value={form.lugar} onChange={handleChange} />
-      <input name="startDate" type="date" value={form.startDate} onChange={handleChange} />
-      <input name="endDate" type="date" value={form.endDate} onChange={handleChange} />
+      <input
+        name="dominio"
+        placeholder="Dominio"
+        value={filters.dominio}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
+      <input
+        name="marca"
+        placeholder="Marca"
+        value={filters.marca}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
+      <input
+        name="modelo"
+        placeholder="Modelo"
+        value={filters.modelo}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
+      <input
+        name="color"
+        placeholder="Color"
+        value={filters.color}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
+      <input
+        name="fechaInicio"
+        type="date"
+        value={filters.fechaInicio}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
+      <input
+        name="fechaFin"
+        type="date"
+        value={filters.fechaFin}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
       <button type="submit">Buscar</button>
+      <button type="button" onClick={handleReset} style={{ marginLeft: '0.5rem' }}>
+        Limpiar
+      </button>
     </form>
   );
 }

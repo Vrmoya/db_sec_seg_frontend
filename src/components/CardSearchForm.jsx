@@ -6,6 +6,7 @@ export default function CardSearchForm({ onSearch }) {
     marca: '',
     modelo: '',
     color: '',
+    lugar:'',
     fechaInicio: '',
     fechaFin: '',
   });
@@ -25,6 +26,7 @@ export default function CardSearchForm({ onSearch }) {
       marca: '',
       modelo: '',
       color: '',
+      lugar:'',
       fechaInicio: '',
       fechaFin: '',
     };
@@ -59,6 +61,13 @@ export default function CardSearchForm({ onSearch }) {
         name="color"
         placeholder="Color"
         value={filters.color}
+        onChange={handleChange}
+        style={{ marginRight: '0.5rem' }}
+      />
+      <input
+        name="lugar"
+        placeholder="Lugar"
+        value={filters.lugar}
         onChange={handleChange}
         style={{ marginRight: '0.5rem' }}
       />

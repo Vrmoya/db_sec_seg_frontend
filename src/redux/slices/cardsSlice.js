@@ -1,4 +1,3 @@
-// src/redux/slices/cardsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import baseApi from '../../services/baseApi';
 
@@ -31,12 +30,28 @@ export const validateBlock = createAsyncThunk(
   }
 );
 
+// ✅ Nuevo thunk para métricas del dashboard
+export const fetchCardStats = createAsyncThunk(
+  'cards/fetchCardStats',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await baseApi.get('/cards/stats');
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err?.response?.data || { message: 'Error al cargar métricas' }
+      );
+    }
+  }
+);
+
 const cardsSlice = createSlice({
   name: 'cards',
   initialState: {
     blocks: [],
     total: 0,
     validated: [],
+    stats: null, // ✅ nuevo estado para métricas
     loading: false,
     error: null,
   },
@@ -60,6 +75,9 @@ const cardsSlice = createSlice({
       })
       .addCase(validateBlock.fulfilled, (state, action) => {
         state.validated.push(action.payload.blockId);
+      })
+      .addCase(fetchCardStats.fulfilled, (state, action) => {
+        state.stats = action.payload;
       });
   },
 });

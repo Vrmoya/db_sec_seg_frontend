@@ -24,46 +24,47 @@ export default function CardCreateForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setSuccess(false);
+  e.preventDefault();
+  setSubmitting(true);
+  setSuccess(false);
 
-    try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      files.forEach((file) => formData.append('images', file));
+  try {
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    files.forEach((file) => formData.append('images', file));
 
-      // Crear el card
-      const res = await baseApi.post('/cards', formData);
-      const newCardId = res.data.id;
+    // Crear el card
+    const res = await baseApi.post('/cards', formData);
+    const newCardId = res.data.id;
 
-      // Subir imágenes si hay
-      if (files.length > 0) {
-        await baseApi.post(`/cards/${newCardId}/images`, formData);
-      }
-
-      setSuccess(true);
-      setForm({
-        type: '',
-        marca: '',
-        modelo: '',
-        dominio: '',
-        color: '',
-        lugar: '',
-        fecha: '',
-        sintesis: '',
-      });
-      setFiles([]);
-    } catch (err) {
-      console.error('Error al crear card:', err);
-      setError('Hubo un error al crear el registro.');
-    } finally {
-      setSubmitting(false);
+    // Subir imágenes si hay
+    if (files.length > 0) {
+      await baseApi.post(`/cards/${newCardId}/images`, formData);
     }
-  };
 
+    setSuccess(true);
+    setForm({
+  type: '',
+  marca: '',
+  modelo: '',
+  dominio: '',
+  color: '',
+  lugar: '',
+  fecha: '',
+  sintesis: '',
+});
+
+// reinicia el formulario
+    setFiles([]);
+  } catch (err) {
+    console.error('Error al crear card:', err);
+    setError('Hubo un error al crear el registro.');
+  } finally {
+    setSubmitting(false);
+  }
+};
   return (
     <form onSubmit={handleSubmit} style={{ padding: '2rem', maxWidth: '600px' }}>
       <h2>Crear nuevo card</h2>

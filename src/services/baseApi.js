@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 // Crear instancia base
 const baseApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
 });
 
 // Interceptor de solicitud: agrega token desde localStorage

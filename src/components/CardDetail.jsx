@@ -1,7 +1,14 @@
-import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import baseApi from '../services/baseApi';
+
+import CardInfo from './CardDetail/CardInfo';
+import CardForm from './CardDetail/CardForm';
+import CardImages from './CardDetail/CardImages';
+import ImageUpload from './CardDetail/ImageUpload';
+import CardHistory from './CardDetail/CardHistory';
+import BackButton from './CardDetail/BackButton';
 
 export default function CardDetail() {
   const { id } = useParams();
@@ -23,7 +30,6 @@ export default function CardDetail() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({});
   const [success, setSuccess] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null); // 👈 NUEVO
 
   useEffect(() => {
     const fetchCard = async () => {
@@ -88,6 +94,23 @@ export default function CardDetail() {
     }
   };
 
+  const handleDeleteImage = async (imageId) => {
+  const confirm = window.confirm('¿Estás seguro de que querés eliminar esta imagen?');
+  if (!confirm) return;
+
+  console.log('🗑️ Eliminando imagen:', imageId);
+
+  try {
+    await baseApi.delete(`/cards/${id}/images/${imageId}`);
+    const res = await baseApi.get(`/cards/${id}`);
+    console.log('🔄 Nuevas imágenes desde backend:', res.data.cardImages);
+    setImages(res.data.cardImages || []);
+  } catch (err) {
+    console.error('❌ Error al eliminar imagen:', err);
+    alert('No se pudo eliminar la imagen.');
+  }
+};
+
   const handleSave = async () => {
     if (!form.marca || !form.modelo || !form.color || !form.lugar || !form.sintesis) {
       alert('Todos los campos son obligatorios');
@@ -118,139 +141,81 @@ export default function CardDetail() {
       state: { filters, page },
     });
   };
+  const handleDeleteCard = async () => {
+  const confirm = window.confirm('¿Estás seguro de que querés eliminar este bloque? Esta acción no se puede deshacer.');
+  if (!confirm) return;
+
+  try {
+    await baseApi.delete(`/cards/${id}`);
+    alert('✅ Card eliminada correctamente');
+    navigate('/dashboard');
+  } catch (err) {
+    console.error('❌ Error al eliminar la card:', err);
+    alert('No se pudo eliminar la card.');
+  }
+};
 
   if (!card) return <p>Cargando...</p>;
 
   return (
-  <div style={{ padding: '2rem' }}>
-    <h2>Detalle del bloque #{card.id}</h2>
+    <div style={{ padding: '2rem' }}>
+      <h2>Detalle del bloque #{card.id}</h2>
 
-    {canEdit && (
-      <button onClick={() => setEditing(true)} style={{ marginBottom: '1rem' }}>
-        ✏️ Editar bloque
-      </button>
-    )}
+      {canEdit && (
+        <button onClick={() => setEditing(true)} style={{ marginBottom: '1rem' }}>
+          ✏️ Editar bloque
+        </button>
+      )}
 
-    {success && <p style={{ color: 'green' }}>✅ Cambios guardados correctamente</p>}
+      {success && <p style={{ color: 'green' }}>✅ Cambios guardados correctamente</p>}
 
-    {!editing ? (
-      <>
-        <p><strong>Dominio:</strong> {card.dominio}</p>
-        <p><strong>Marca:</strong> {card.marca}</p>
-        <p><strong>Modelo:</strong> {card.modelo}</p>
-        <p><strong>Color:</strong> {card.color}</p>
-        <p><strong>Lugar:</strong> {card.lugar}</p>
-        <p><strong>Fecha:</strong> {new Date(card.fecha).toLocaleDateString('es-AR')}</p>
-        <p><strong>Síntesis:</strong> {card.sintesis}</p>
-      </>
-    ) : (
-      <div style={{ marginBottom: '2rem' }}>
-        {['marca', 'modelo', 'color', 'lugar'].map((field) => (
-          <label key={field}>
-            {field.charAt(0).toUpperCase() + field.slice(1)}:<br />
-            <input
-              value={form[field]}
-              onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-            /><br />
-          </label>
-        ))}
-        <label>Síntesis:<br />
-          <textarea
-            value={form.sintesis}
-            onChange={(e) => setForm({ ...form, sintesis: e.target.value })}
-          />
-        </label><br />
-        <button onClick={handleSave}>Guardar cambios</button>
-        <button onClick={() => setEditing(false)} style={{ marginLeft: '1rem' }}>Cancelar</button>
-      </div>
-    )}
-
-    <h3>Imágenes asociadas</h3>
-    {images.length === 0 ? (
-      <p>No hay imágenes aún.</p>
-    ) : (
-      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-        {images.map((img) => (
-          <img
-            key={img.id}
-            src={`${import.meta.env.VITE_API_URL}${img.url}`}
-            alt="card"
-            style={{ width: '200px', borderRadius: '8px', cursor: 'pointer' }}
-            onClick={() => setSelectedImage(`${import.meta.env.VITE_API_URL}${img.url}`)}
-            onError={(e) => {
-              console.error("❌ Error al cargar imagen:", e.target.src);
-              e.target.src = '/placeholder.jpg';
-            }}
-          />
-        ))}
-      </div>
-    )}
-
-    {selectedImage && (
-      <div
-        onClick={() => setSelectedImage(null)}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0,0,0,0.8)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-          cursor: 'zoom-out'
-        }}
-      >
-        <img
-          src={selectedImage}
-          alt="Ampliada"
-          style={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '12px' }}
+      {!editing ? (
+        <CardInfo card={card} />
+      ) : (
+        <CardForm
+          form={form}
+          setForm={setForm}
+          onSave={handleSave}
+          onCancel={() => setEditing(false)}
         />
-      </div>
-    )}
+      )}
 
-    <h3 style={{ marginTop: '2rem' }}>Subir nuevas imágenes</h3>
-    <input
-      type="file"
-      multiple
-      accept="image/jpeg,image/png"
-      onChange={(e) => setFiles([...e.target.files])}
-    />
-    <button onClick={handleUpload} disabled={uploading || files.length === 0}>
-      {uploading ? 'Subiendo...' : 'Subir imágenes'}
-    </button>
+      <h3>Imágenes asociadas</h3>
+      <CardImages
+        images={images}
+        apiUrl={import.meta.env.VITE_API_URL}
+        onDelete={handleDeleteImage}
+        canEdit={canEdit}
+      />
 
-    {uploading && (
-      <div style={{ marginTop: '1rem' }}>
-        <progress value={uploadProgress} max="100" style={{ width: '100%' }} />
-        <p>{uploadProgress}%</p>
-      </div>
-    )}
+      <ImageUpload
+        files={files}
+        setFiles={setFiles}
+        uploading={uploading}
+        uploadProgress={uploadProgress}
+        uploadComplete={uploadComplete}
+        onUpload={handleUpload}
+      />
 
-    {uploadComplete && (
-      <p style={{ color: 'green', marginTop: '1rem' }}>✅ Imágenes cargadas correctamente</p>
-    )}
+      <CardHistory historial={historial} dominio={card.dominio} />
 
-    <h3 style={{ marginTop: '3rem' }}>Historial del dominio: {card.dominio}</h3>
-    {historial.length === 0 ? (
-      <p>No hay otros registros para este dominio.</p>
-    ) : (
-      <ul>
-        {historial.map((h) => (
-          <li key={h.id}>
-            <strong>{new Date(h.fecha).toLocaleDateString('es-AR')}</strong> — {h.lugar} — {h.sintesis.slice(0, 60)}...
-            <br />
-            <Link to={`/cards/${h.id}`}>Ver detalle</Link>
-          </li>
-        ))}
-      </ul>
-    )}
-
-    <button onClick={handleVolver} style={{ marginTop: '2rem' }}>
-      ⬅ Volver al listado
-    </button>
-  </div>
-);
+      <BackButton onClick={handleVolver} />
+      {user?.role === 'admin' && (
+  <button
+    onClick={handleDeleteCard}
+    style={{
+      backgroundColor: '#e40eaeff',
+      color: 'white',
+      padding: '0.5rem 1rem',
+      borderRadius: '4px',
+      border: 'none',
+      cursor: 'pointer',
+      marginTop: '2rem',
+    }}
+  >
+    🗑️ Eliminar Registro
+  </button>
+)}
+    </div>
+  );
 }

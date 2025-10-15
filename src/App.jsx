@@ -1,14 +1,15 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import EditorDashboard from './pages/EditorDashboard';
-import UsersDashboard from './pages/UsersDashboard';
-import Unauthorized from './pages/Unauthorized';
-import CardDetail from './components/CardDetail'; // ✅ NUEVO
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import EditorDashboard from "./pages/EditorDashboard";
+import UsersDashboard from "./pages/UsersDashboard";
+import Unauthorized from "./pages/Unauthorized";
+import CardDetail from "./components/CardDetail";
+import CardCreateForm from "./components/CardCreateForm";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { token, user } = useSelector((state) => state.auth);
@@ -48,7 +49,7 @@ export default function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -57,7 +58,7 @@ export default function App() {
         <Route
           path="/editor"
           element={
-            <ProtectedRoute allowedRoles={['editor', 'admin']}>
+            <ProtectedRoute allowedRoles={["editor", "admin"]}>
               <EditorDashboard />
             </ProtectedRoute>
           }
@@ -66,7 +67,7 @@ export default function App() {
         <Route
           path="/users"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <UsersDashboard />
             </ProtectedRoute>
           }
@@ -76,12 +77,21 @@ export default function App() {
         <Route
           path="/cards/:id"
           element={
-            <ProtectedRoute allowedRoles={['viewer', 'editor', 'admin']}>
+            <ProtectedRoute allowedRoles={["viewer", "editor", "admin"]}>
               <CardDetail />
             </ProtectedRoute>
           }
         />
+        <Route
+        path="/cards/create"
+        element={
+          <ProtectedRoute allowedRoles={["editor", "admin"]}>
+            <CardCreateForm />
+          </ProtectedRoute>
+        }
+      />
       </Routes>
+      
     </BrowserRouter>
   );
 }

@@ -39,12 +39,13 @@ export default function CardBlock({ block }) {
     <div
       onClick={handleNavigate}
       style={{
-        border: '1px solid #ccc',
+        border: '1px solid #e00fc5ff',
         marginBottom: '1rem',
         padding: '1rem',
         borderRadius: '8px',
         cursor: 'pointer',
         backgroundColor: '#f9f9f9',
+        
       }}
     >
       

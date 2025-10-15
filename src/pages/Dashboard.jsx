@@ -7,12 +7,14 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const { blocks, loading, error, total, stats } = useSelector((state) => state.cards);
+  const { user } = useSelector((state) => state.auth);
 
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({});
@@ -80,11 +82,29 @@ export default function Dashboard() {
       <div style={{ display: 'flex' }}>
         <Sidebar />
         <main style={{ flex: 1, padding: '2rem' }}>
-          <h2>Validación de registros ({total})</h2>
+          <h2>Cantidad de Registros ({total})</h2>
 
-          <button onClick={handleExportPDF} style={{ marginBottom: '1rem' }}>
-            🧾 Exportar PDF
-          </button>
+
+          {/* ➕ Botón para crear nueva card */}
+          {(user?.role === 'admin' || user?.role === 'editor') && (
+            <button
+              onClick={() => navigate('/cards/create')}
+              style={{
+                marginBottom: '1rem',
+                backgroundColor: '#af4c91ff',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              ➕ Cargar Nuevo
+            </button>
+          )}
+              <button onClick={handleExportPDF} style={{ marginBottom: '1rem' }}>
+                🧾 Exportar PDF
+              </button>
 
           {/* 📊 Métricas del sistema */}
           {stats && (

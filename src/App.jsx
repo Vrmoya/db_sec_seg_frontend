@@ -2,14 +2,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login/Login";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import EditorDashboard from "./pages/EditorDashboard";
-import UsersDashboard from "./pages/UsersDashboard";
-import Unauthorized from "./pages/Unauthorized";
-import CardDetail from "./components/CardDetail";
-import CardCreateForm from "./components/CardCreateForm";
+import UsersDashboard from "./pages/UserDashboard/UsersDashboard";
+import Unauthorized from "./pages/Unauthorized/Unauthorized";
+import CardDetail from "./components/CardDetail/CardDetail";
+import CardCreateForm from "./components/CardCreateForm/CardCreateForm";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { token, user } = useSelector((state) => state.auth);

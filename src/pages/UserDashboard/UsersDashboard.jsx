@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, toggleUser } from '../redux/slices/usersSlice';
-import { updateUser } from '../services/userService';
-import Header from '../components/Header';
+import { fetchUsers, toggleUser } from '../../redux/slices/usersSlice';
+import { updateUser } from '../../services/userService';
+import Header from '../../components/Header/Header';
+import styles from './UsersDashboard.module.css';
 
 export default function UsersDashboard() {
   const dispatch = useDispatch();
@@ -45,21 +46,21 @@ export default function UsersDashboard() {
   return (
     <>
       <Header />
-      <div style={{ padding: '2rem' }}>
-        <h2>Gestión de usuarios ({total})</h2>
+      <div className={styles.container}>
+        <h2 className={styles.title}>Gestión de usuarios ({total})</h2>
 
-        <div style={{ marginBottom: '1rem' }}>
+        <div className={styles.filters}>
           <input
             type="text"
             placeholder="Buscar por nombre o email"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ marginRight: '1rem', padding: '0.5rem' }}
+            className={styles.input}
           />
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            style={{ padding: '0.5rem' }}
+            className={styles.select}
           >
             <option value="">Todos los roles</option>
             <option value="admin">Admin</option>
@@ -69,9 +70,9 @@ export default function UsersDashboard() {
         </div>
 
         {loading && <p>Cargando usuarios...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className={styles.error}>{error}</p>}
 
-        <table>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>Nombre</th>
@@ -90,13 +91,14 @@ export default function UsersDashboard() {
                   <select
                     value={user.role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    className={styles.select}
                   >
                     <option value="admin">Admin</option>
                     <option value="editor">Editor</option>
                     <option value="viewer">Usuario</option>
                   </select>
                 </td>
-                <td style={{ color: user.active ? 'green' : 'gray' }}>
+                <td className={user.active ? styles.active : styles.inactive}>
                   <input
                     type="checkbox"
                     checked={user.active}
@@ -104,7 +106,7 @@ export default function UsersDashboard() {
                   />
                 </td>
                 <td>
-                  <button onClick={() => handleToggle(user.id)}>
+                  <button onClick={() => handleToggle(user.id)} className={styles.button}>
                     {user.active ? 'Desactivar' : 'Activar'}
                   </button>
                 </td>
@@ -113,10 +115,14 @@ export default function UsersDashboard() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: '1rem' }}>
-          <button disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</button>
-          <span style={{ margin: '0 1rem' }}>Página {page}</span>
-          <button onClick={() => setPage(page + 1)}>Siguiente</button>
+        <div className={styles.pagination}>
+          <button disabled={page === 1} onClick={() => setPage(page - 1)} className={styles.button}>
+            Anterior
+          </button>
+          <span>Página {page}</span>
+          <button onClick={() => setPage(page + 1)} className={styles.button}>
+            Siguiente
+          </button>
         </div>
       </div>
     </>

@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import styles from '../styles/DashboardPanels.module.css';
 
 export default function AdminDashboard() {
   const { list } = useSelector((state) => state.users);
@@ -12,11 +13,13 @@ export default function AdminDashboard() {
   const totalCards = blocks?.length || 0;
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Panel de administración</h2>
-      <p>Bienvenido, administrador. Acá vas a poder gestionar usuarios, roles y registros.</p>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Panel de administración</h2>
+      <p className={styles.subtitle}>
+        Bienvenido, administrador. Acá vas a poder gestionar usuarios, roles y registros.
+      </p>
 
-      <div style={{ marginTop: '2rem' }}>
+      <div className={styles.metricsBox}>
         <h3>Métricas rápidas</h3>
         <ul>
           <li>Total de usuarios: {list?.length || 0}</li>

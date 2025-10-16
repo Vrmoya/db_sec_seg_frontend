@@ -1,8 +1,8 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../redux/slices/authSlice';
+import { loginUser } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
+import styles from './Login.module.css';
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -11,13 +11,13 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(null);
 
-    // ✅ Validaciones básicas
     if (!email.includes('@') || !email.includes('.')) {
       setErrorMessage('El correo electrónico no es válido.');
       return;
@@ -41,32 +41,43 @@ export default function Login() {
   };
 
   return (
-    <div className="login-container">
-      <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit}>
+    <div className={styles.loginContainer}>
+      <h2 className={styles.title}>🔐 Iniciar sesión</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="email"
           placeholder="Correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          className={styles.input}
         />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={loading}>
+
+        <div className={styles.inputGroup}>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className={styles.input}
+          />
+          <span
+            className={styles.toggleIcon}
+            onClick={() => setShowPassword(!showPassword)}
+            title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          >
+            {showPassword ? '🙈' : '👁️'}
+          </span>
+        </div>
+
+        <button type="submit" disabled={loading} className={styles.buttonPrimary}>
           {loading ? 'Cargando...' : 'Ingresar'}
         </button>
       </form>
 
       {errorMessage && (
-        <p className="error-message" style={{ color: 'red', marginTop: '1rem' }}>
-          {errorMessage}
-        </p>
+        <p className={styles.errorMessage}>❌ {errorMessage}</p>
       )}
     </div>
   );

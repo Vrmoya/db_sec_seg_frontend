@@ -1,8 +1,9 @@
-import CardSearchForm from '../components/CardSearchForm';
-import CardBlock from '../components/CardBlock';
+import CardSearchForm from '../components/CardSearchForm/CardSearchForm';
+import CardBlock from '../components/CardBlock/CardBlock';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCardBlocks } from '../redux/slices/cardsSlice';
+import styles from '../styles/DashboardPanels.module.css';
 
 export default function EditorDashboard() {
   const dispatch = useDispatch();
@@ -13,14 +14,17 @@ export default function EditorDashboard() {
   }, [dispatch]);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Panel del editor</h2>
-      <p>Bienvenido, editor. Acá vas a poder validar y revisar registros.</p>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Panel del editor</h2>
+      <p className={styles.subtitle}>
+        Bienvenido, editor. Acá vas a poder validar y revisar registros.
+      </p>
 
       <CardSearchForm />
 
       {loading && <p>Cargando registros...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
+
       {blocks.length > 0 ? (
         blocks.map((block) => (
           <CardBlock key={block.id} block={block} />

@@ -1,7 +1,7 @@
-export default function BackButton({ onClick }) {
+export default function BackButton({ onClick, className }) {
   return (
-    <button onClick={onClick} style={{ marginTop: '2rem' }}>
-      ⬅ Volver al listado
+    <button onClick={onClick} className={className}>
+      🔙 Volver al listado
     </button>
   );
 }

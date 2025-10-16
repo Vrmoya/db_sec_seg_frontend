@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { validateBlock } from '../redux/slices/cardsSlice';
+import { validateBlock } from '../../redux/slices/cardsSlice';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styles from './CardBlock.module.css';
 
 export default function CardBlock({ block }) {
   const dispatch = useDispatch();
@@ -36,34 +37,19 @@ export default function CardBlock({ block }) {
     : 'Sin fecha';
 
   return (
-    <div
-      onClick={handleNavigate}
-      style={{
-        border: '1px solid #e00fc5ff',
-        marginBottom: '1rem',
-        padding: '1rem',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        backgroundColor: '#f9f9f9',
-        
-      }}
-    >
-      
-      <div>
-        <strong>{block.marca} {block.modelo}</strong><br />
-        Dominio: {block.dominio}<br />
-        Tipo: {block.type}<br />
-        Fecha: {fechaFormateada}
+    <div onClick={handleNavigate} className={styles.card}>
+      <div className={styles.details}>
+        <h3 className={styles.title}>
+          {block.marca} {block.modelo}
+        </h3>
+        <p><strong>Dominio:</strong> {block.dominio}</p>
+        <p><strong>Tipo:</strong> {block.type}</p>
+        <p><strong>Fecha:</strong> {fechaFormateada}</p>
       </div>
       <button
         onClick={handleValidate}
         disabled={isValidated || validating}
-        style={{
-          marginTop: '1rem',
-          backgroundColor: isValidated ? '#4caf50' : '#2196f3',
-          color: 'white',
-          cursor: isValidated ? 'default' : 'pointer'
-        }}
+        className={`${styles.validateButton} ${isValidated ? styles.validated : ''}`}
       >
         {isValidated ? '✅ Validado' : validating ? 'Validando...' : 'Validar bloque'}
       </button>

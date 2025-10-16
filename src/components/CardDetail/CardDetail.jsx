@@ -1,14 +1,16 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import baseApi from '../services/baseApi';
+import baseApi from '../../services/baseApi';
 
-import CardInfo from './CardDetail/CardInfo';
-import CardForm from './CardDetail/CardForm';
-import CardImages from './CardDetail/CardImages';
-import ImageUpload from './CardDetail/ImageUpload';
-import CardHistory from './CardDetail/CardHistory';
-import BackButton from './CardDetail/BackButton';
+import CardInfo from './CardInfo';
+import CardForm from './CardForm';
+import CardImages from './CardImages';
+import ImageUpload from './ImageUpload';
+import CardHistory from './CardHistory';
+import BackButton from './BackButton';
+
+import styles from './CardDetail.module.css';
 
 export default function CardDetail() {
   const { id } = useParams();
@@ -43,6 +45,7 @@ export default function CardDetail() {
           color: res.data.color || '',
           lugar: res.data.lugar || '',
           sintesis: res.data.sintesis || '',
+          fecha: res.data.fecha ? res.data.fecha.slice(0, 10) : '',
         });
 
         const res2 = await baseApi.get(`/cards/dominio/${res.data.dominio}`);
@@ -95,24 +98,21 @@ export default function CardDetail() {
   };
 
   const handleDeleteImage = async (imageId) => {
-  const confirm = window.confirm('¿Estás seguro de que querés eliminar esta imagen?');
-  if (!confirm) return;
+    const confirm = window.confirm('¿Estás seguro de que querés eliminar esta imagen?');
+    if (!confirm) return;
 
-  console.log('🗑️ Eliminando imagen:', imageId);
-
-  try {
-    await baseApi.delete(`/cards/${id}/images/${imageId}`);
-    const res = await baseApi.get(`/cards/${id}`);
-    console.log('🔄 Nuevas imágenes desde backend:', res.data.cardImages);
-    setImages(res.data.cardImages || []);
-  } catch (err) {
-    console.error('❌ Error al eliminar imagen:', err);
-    alert('No se pudo eliminar la imagen.');
-  }
-};
+    try {
+      await baseApi.delete(`/cards/${id}/images/${imageId}`);
+      const res = await baseApi.get(`/cards/${id}`);
+      setImages(res.data.cardImages || []);
+    } catch (err) {
+      console.error('❌ Error al eliminar imagen:', err);
+      alert('No se pudo eliminar la imagen.');
+    }
+  };
 
   const handleSave = async () => {
-    if (!form.marca || !form.modelo || !form.color || !form.lugar || !form.sintesis) {
+    if (!form.marca || !form.modelo || !form.color || !form.lugar || !form.sintesis || !form.fecha) {
       alert('Todos los campos son obligatorios');
       return;
     }
@@ -127,6 +127,7 @@ export default function CardDetail() {
         color: res.data.color,
         lugar: res.data.lugar,
         sintesis: res.data.sintesis,
+        fecha: res.data.fecha ? res.data.fecha.slice(0, 10) : '',
       });
       setEditing(false);
       setSuccess(true);
@@ -141,33 +142,34 @@ export default function CardDetail() {
       state: { filters, page },
     });
   };
-  const handleDeleteCard = async () => {
-  const confirm = window.confirm('¿Estás seguro de que querés eliminar este bloque? Esta acción no se puede deshacer.');
-  if (!confirm) return;
 
-  try {
-    await baseApi.delete(`/cards/${id}`);
-    alert('✅ Card eliminada correctamente');
-    navigate('/dashboard');
-  } catch (err) {
-    console.error('❌ Error al eliminar la card:', err);
-    alert('No se pudo eliminar la card.');
-  }
-};
+  const handleDeleteCard = async () => {
+    const confirm = window.confirm('¿Estás seguro de que querés eliminar este bloque? Esta acción no se puede deshacer.');
+    if (!confirm) return;
+
+    try {
+      await baseApi.delete(`/cards/${id}`);
+      alert('✅ Card eliminada correctamente');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('❌ Error al eliminar la card:', err);
+      alert('No se pudo eliminar la card.');
+    }
+  };
 
   if (!card) return <p>Cargando...</p>;
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Detalle del bloque #{card.id}</h2>
+    <div className={styles.sectionBox}>
+      <h2 className={styles.sectionTitle}>{card.type}</h2>
 
       {canEdit && (
-        <button onClick={() => setEditing(true)} style={{ marginBottom: '1rem' }}>
+        <button onClick={() => setEditing(true)} className={styles.buttonPrimary}>
           ✏️ Editar bloque
         </button>
       )}
 
-      {success && <p style={{ color: 'green' }}>✅ Cambios guardados correctamente</p>}
+      {success && <p className={styles.successMessage}>✅ Cambios guardados correctamente</p>}
 
       {!editing ? (
         <CardInfo card={card} />
@@ -180,7 +182,7 @@ export default function CardDetail() {
         />
       )}
 
-      <h3>Imágenes asociadas</h3>
+      <h3 className={styles.sectionTitle}>Imágenes asociadas</h3>
       <CardImages
         images={images}
         apiUrl={import.meta.env.VITE_API_URL}
@@ -188,34 +190,26 @@ export default function CardDetail() {
         canEdit={canEdit}
       />
 
-      <ImageUpload
-        files={files}
-        setFiles={setFiles}
-        uploading={uploading}
-        uploadProgress={uploadProgress}
-        uploadComplete={uploadComplete}
-        onUpload={handleUpload}
-      />
+    <h3 className={styles.sectionTitle}>Subir nuevas imágenes</h3>
+<ImageUpload
+  files={files}
+  setFiles={setFiles}
+  uploading={uploading}
+  uploadProgress={uploadProgress}
+  uploadComplete={uploadComplete}
+  onUpload={handleUpload}
+/>
 
       <CardHistory historial={historial} dominio={card.dominio} />
 
-      <BackButton onClick={handleVolver} />
-      {user?.role === 'admin' && (
-  <button
-    onClick={handleDeleteCard}
-    style={{
-      backgroundColor: '#e40eaeff',
-      color: 'white',
-      padding: '0.5rem 1rem',
-      borderRadius: '4px',
-      border: 'none',
-      cursor: 'pointer',
-      marginTop: '2rem',
-    }}
-  >
-    🗑️ Eliminar Registro
-  </button>
-)}
+    <div className={styles.buttonGroup}>
+  <BackButton onClick={handleVolver} className={styles.buttonSecondary} />
+  {user?.role === 'admin' && (
+    <button onClick={handleDeleteCard} className={styles.buttonSecondary}>
+      🗑️ Eliminar Registro
+    </button>
+  )}
+</div>
     </div>
   );
 }

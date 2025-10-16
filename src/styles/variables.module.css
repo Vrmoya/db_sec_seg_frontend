@@ -1,0 +1,9 @@
+:root {
+  --color-primary: #003366;       /* Azul institucional */
+  --color-accent: #00aaff;        /* Celeste para botones o enlaces */
+  --color-background: #f9f9f9;    /* Fondo general */
+  --color-surface: #ffffff;       /* Tarjetas y formularios */
+  --color-border: #dddddd;
+  --color-text: #222222;
+  --color-muted: #666666;
+}

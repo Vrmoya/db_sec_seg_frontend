@@ -1,0 +1,61 @@
+@import '../../styles/variables.module.css';
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin:  auto;
+  width:100%;
+  max-width: 720px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+   min-height: 240px; /* ajustá según el contenido promedio */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.details {
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.title {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  border-left: 4px solid var(--color-accent);
+  padding-left: 0.5rem;
+}
+
+.validateButton {
+  margin-top: 1.5rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.validateButton:hover {
+  background-color: #002244;
+}
+
+.validateButton:disabled {
+  background-color: #4caf50;
+  cursor: default;
+}
+
+.validated {
+  background-color: #4caf50 !important;
+}

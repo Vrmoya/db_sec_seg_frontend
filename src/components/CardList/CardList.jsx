@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCardBlocks } from '../redux/slices/cardsSlice';
+import { fetchCardBlocks } from '../../redux/slices/cardsSlice';
 
 export default function CardList() {
   const dispatch = useDispatch();

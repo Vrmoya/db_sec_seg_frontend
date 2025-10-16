@@ -1,0 +1,66 @@
+@import '../../styles/variables.module.css';
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.imageWrapper {
+  position: relative;
+}
+
+.image {
+  width: 200px;
+  border-radius: 8px;
+  cursor: pointer;
+  object-fit: cover;
+  transition: transform 0.2s ease-in-out;
+}
+
+.image:hover {
+  transform: scale(1.03);
+}
+
+.deleteButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+
+.modalImage {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+  .image {
+    width: 100%;
+    max-width: 300px;
+  }
+}

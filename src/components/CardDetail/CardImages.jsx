@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styles from './CardImages.module.css';
 
 export default function CardImages({ images, apiUrl, onDelete, canEdit }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -9,19 +10,19 @@ export default function CardImages({ images, apiUrl, onDelete, canEdit }) {
 
   return (
     <>
-      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      <div className={styles.gallery}>
         {images.map((img) => {
           const imageUrl = `${apiUrl}${img.url}`;
           return (
-            <div key={img.id} style={{ position: 'relative' }}>
+            <div key={img.id} className={styles.imageWrapper}>
               <img
                 src={imageUrl}
                 alt="card"
-                style={{ width: '200px', borderRadius: '8px', cursor: 'pointer' }}
+                className={styles.image}
                 onClick={() => setSelectedImage(imageUrl)}
                 onError={(e) => {
                   if (!e.target.src.includes('placeholder.jpg')) {
-                    console.error("❌ Error al cargar imagen:", e.target.src);
+                    console.error('❌ Error al cargar imagen:', e.target.src);
                     e.target.src = '/placeholder.jpg';
                   }
                 }}
@@ -29,18 +30,7 @@ export default function CardImages({ images, apiUrl, onDelete, canEdit }) {
               {canEdit && (
                 <button
                   onClick={() => onDelete(img.id)}
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                    background: 'rgba(255,0,0,0.8)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '24px',
-                    height: '24px',
-                    cursor: 'pointer'
-                  }}
+                  className={styles.deleteButton}
                   title="Eliminar imagen"
                 >
                   🗑️
@@ -53,25 +43,13 @@ export default function CardImages({ images, apiUrl, onDelete, canEdit }) {
 
       {selectedImage && (
         <div
+          className={styles.modalOverlay}
           onClick={() => setSelectedImage(null)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-            cursor: 'zoom-out'
-          }}
         >
           <img
             src={selectedImage}
             alt="Ampliada"
-            style={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '12px' }}
+            className={styles.modalImage}
           />
         </div>
       )}

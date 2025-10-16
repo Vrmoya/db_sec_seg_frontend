@@ -1,0 +1,63 @@
+@import '../../styles/variables.module.css';
+
+.header {
+  padding: 1rem 2rem;
+  background-color: var(--color-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+}
+
+.role {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+.logoutButton {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #0088cc;
+}
+
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .logoutButton {
+    width: 100%;
+  }
+}

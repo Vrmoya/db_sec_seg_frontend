@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchCardBlocks } from '../redux/slices/cardsSlice';
+import { fetchCardBlocks } from '../../redux/slices/cardsSlice';
 
 export default function CardFilters() {
   const [startDate, setStartDate] = useState('');

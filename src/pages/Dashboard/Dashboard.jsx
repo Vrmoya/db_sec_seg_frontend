@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCardBlocks, fetchCardStats } from "../../redux/slices/cardsSlice";
+import { fetchCardBlocks } from "../../redux/slices/cardsSlice";
 import CardBlock from "../../components/CardBlock/CardBlock";
 import CardSearchForm from "../../components/CardSearchForm/CardSearchForm";
 import Header from "../../components/Header/Header";
@@ -15,13 +15,12 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { blocks, loading, error, total, stats } = useSelector(
-    (state) => state.cards
-  );
+  const { blocks, loading, error, total } = useSelector((state) => state.cards);
   const { user } = useSelector((state) => state.auth);
 
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({});
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const limit = 10;
 
   useEffect(() => {
@@ -32,14 +31,8 @@ export default function Dashboard() {
   }, [location.state?.filters, location.state?.page]);
 
   useEffect(() => {
-    dispatch(
-      fetchCardBlocks({ ...filters, limit, offset: (page - 1) * limit })
-    );
+    dispatch(fetchCardBlocks({ ...filters, limit, offset: (page - 1) * limit }));
   }, [dispatch, page, filters]);
-
-  useEffect(() => {
-    dispatch(fetchCardStats());
-  }, [dispatch]);
 
   const handleSearch = (newFilters) => {
     setPage(1);
@@ -68,18 +61,7 @@ export default function Dashboard() {
     ]);
 
     autoTable(doc, {
-      head: [
-        [
-          "ID",
-          "Dominio",
-          "Marca",
-          "Modelo",
-          "Color",
-          "Lugar",
-          "Fecha",
-          "Síntesis",
-        ],
-      ],
+      head: [["ID", "Dominio", "Marca", "Modelo", "Color", "Lugar", "Fecha", "Síntesis"]],
       body: tableData,
       startY: 30,
       styles: { fontSize: 10 },
@@ -92,9 +74,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <Header />
+      <Header onToggleSidebar={() => setSidebarVisible(!sidebarVisible)} />
       <div className={layout.mainContent}>
-        <Sidebar />
+        <Sidebar isVisible={sidebarVisible} />
         <main className={layout.pageContent}>
           <h2>Cantidad de Registros ({total})</h2>
 
@@ -111,42 +93,6 @@ export default function Dashboard() {
           <button onClick={handleExportPDF} className={layout.buttonSecondary}>
             🧾 Exportar PDF
           </button>
-
-          {stats && (
-            <div className={layout.sectionBox}>
-              <p>
-                <strong>Total:</strong> {stats.total}
-              </p>
-              <p>
-                <strong>✅ Validados:</strong> {stats.validados}
-              </p>
-              <p>
-                <strong>❌ No validados:</strong> {stats.noValidados}
-              </p>
-
-              <details style={{ marginTop: "1rem" }}>
-                <summary>📍 Registros por lugar</summary>
-                <ul>
-                  {stats.porLugar.map((l) => (
-                    <li key={l.lugar}>
-                      {l.lugar}: {l.count}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-
-              <details style={{ marginTop: "1rem" }}>
-                <summary>🚗 Registros por marca</summary>
-                <ul>
-                  {stats.porMarca.map((m) => (
-                    <li key={m.marca}>
-                      {m.marca}: {m.count}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </div>
-          )}
 
           <CardSearchForm onSearch={handleSearch} />
 

@@ -9,6 +9,20 @@
   box-shadow: 0 0 4px rgba(0,0,0,0.05);
 }
 
+.sidebarVisible {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+}
+
+.sidebarHidden {
+  display: none;
+}
+
 .title {
   font-size: 1.2rem;
   color: var(--color-primary);

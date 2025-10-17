@@ -5,13 +5,12 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1.5rem;
-  margin:  auto;
-  width:100%;
-  max-width: 720px;
+  margin: 0;
+  width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   transition: box-shadow 0.2s ease;
   cursor: pointer;
-   min-height: 240px; /* ajustá según el contenido promedio */
+  min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -58,4 +57,19 @@
 
 .validated {
   background-color: #4caf50 !important;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .validateButton {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
 }

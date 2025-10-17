@@ -8,6 +8,16 @@
   align-items: center;
   color: white;
   border-bottom: 2px solid var(--color-accent);
+  position: relative;
+}
+
+.menuToggle {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: white;
+  margin-right: 1rem;
 }
 
 .userInfo {
@@ -59,5 +69,16 @@
 
   .logoutButton {
     width: 100%;
+  }
+
+  .menuToggle {
+    display: block;
+    align-self: flex-start;
+  }
+}
+
+@media (min-width: 601px) {
+  .menuToggle {
+    display: none;
   }
 }

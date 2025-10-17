@@ -3,7 +3,8 @@ import { logout } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
 
-export default function Header() {
+
+export default function Header({ onToggleSidebar }) {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,6 +17,10 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
+      <button className={styles.menuToggle} onClick={onToggleSidebar}>
+        ☰
+      </button>
+
       <div className={styles.userInfo}>
         {user?.image && (
           <img
@@ -29,6 +34,7 @@ export default function Header() {
           <div className={styles.role}>{user?.role}</div>
         </div>
       </div>
+
       <button onClick={handleLogout} className={styles.logoutButton}>
         🔓 Cerrar sesión
       </button>

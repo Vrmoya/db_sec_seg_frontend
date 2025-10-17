@@ -30,7 +30,6 @@ export const validateBlock = createAsyncThunk(
   }
 );
 
-// ✅ Nuevo thunk para métricas del dashboard
 export const fetchCardStats = createAsyncThunk(
   'cards/fetchCardStats',
   async (_, { rejectWithValue }) => {
@@ -51,33 +50,45 @@ const cardsSlice = createSlice({
     blocks: [],
     total: 0,
     validated: [],
-    stats: null, // ✅ nuevo estado para métricas
-    loading: false,
-    error: null,
+    stats: null,
+    statsLoading: false,
+    statsError: null,
+    blocksLoading: false,
+    blocksError: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCardBlocks.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.blocksLoading = true;
+        state.blocksError = null;
       })
       .addCase(fetchCardBlocks.fulfilled, (state, action) => {
-        state.loading = false;
+        state.blocksLoading = false;
         state.blocks = action.payload.results;
         state.total = action.payload.total;
       })
       .addCase(fetchCardBlocks.rejected, (state, action) => {
-        state.loading = false;
+        state.blocksLoading = false;
         state.blocks = [];
         state.total = 0;
-        state.error = action.payload?.message || 'Error al cargar bloques';
+        state.blocksError = action.payload?.message || 'Error al cargar bloques';
       })
       .addCase(validateBlock.fulfilled, (state, action) => {
         state.validated.push(action.payload.blockId);
       })
+      .addCase(fetchCardStats.pending, (state) => {
+        state.statsLoading = true;
+        state.statsError = null;
+      })
       .addCase(fetchCardStats.fulfilled, (state, action) => {
+        state.statsLoading = false;
         state.stats = action.payload;
+      })
+      .addCase(fetchCardStats.rejected, (state, action) => {
+        state.statsLoading = false;
+        state.stats = null;
+        state.statsError = action.payload?.message || 'Error al cargar métricas';
       });
   },
 });

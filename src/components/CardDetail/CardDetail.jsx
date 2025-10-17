@@ -48,8 +48,9 @@ export default function CardDetail() {
           fecha: res.data.fecha ? res.data.fecha.slice(0, 10) : '',
         });
 
-        const res2 = await baseApi.get(`/cards/dominio/${res.data.dominio}`);
-        const otros = res2.data.filter((c) => c.id !== parseInt(id));
+        // ✅ Nuevo fetch para historial por dominio
+        const resHistorial = await baseApi.get(`/cards/historial/${res.data.dominio}`);
+        const otros = resHistorial.data.filter((c) => c.id !== parseInt(id));
         setHistorial(otros);
       } catch (err) {
         console.error('Error al cargar detalle de tarjeta:', err);
@@ -190,26 +191,26 @@ export default function CardDetail() {
         canEdit={canEdit}
       />
 
-    <h3 className={styles.sectionTitle}>Subir nuevas imágenes</h3>
-<ImageUpload
-  files={files}
-  setFiles={setFiles}
-  uploading={uploading}
-  uploadProgress={uploadProgress}
-  uploadComplete={uploadComplete}
-  onUpload={handleUpload}
-/>
+      <h3 className={styles.sectionTitle}>Subir nuevas imágenes</h3>
+      <ImageUpload
+        files={files}
+        setFiles={setFiles}
+        uploading={uploading}
+        uploadProgress={uploadProgress}
+        uploadComplete={uploadComplete}
+        onUpload={handleUpload}
+      />
 
       <CardHistory historial={historial} dominio={card.dominio} />
 
-    <div className={styles.buttonGroup}>
-  <BackButton onClick={handleVolver} className={styles.buttonSecondary} />
-  {user?.role === 'admin' && (
-    <button onClick={handleDeleteCard} className={styles.buttonSecondary}>
-      🗑️ Eliminar Registro
-    </button>
-  )}
-</div>
+      <div className={styles.buttonGroup}>
+        <BackButton onClick={handleVolver} className={styles.buttonSecondary} />
+        {user?.role === 'admin' && (
+          <button onClick={handleDeleteCard} className={styles.buttonSecondary}>
+            🗑️ Eliminar Registro
+          </button>
+        )}
+      </div>
     </div>
   );
 }

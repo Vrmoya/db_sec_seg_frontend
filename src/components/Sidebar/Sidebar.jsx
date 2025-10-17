@@ -2,11 +2,12 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from './Sidebar.module.css';
 
-export default function Sidebar() {
+export default function Sidebar({ isVisible }) {
   const { user } = useSelector((state) => state.auth);
+  const sidebarClass = isVisible ? styles.sidebarVisible : styles.sidebarHidden;
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${sidebarClass}`}>
       <h4 className={styles.title}>📂 Menú</h4>
       <ul className={styles.menu}>
         <li><Link to="/dashboard" className={styles.link}>📊 Dashboard</Link></li>

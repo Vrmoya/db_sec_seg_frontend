@@ -11,7 +11,7 @@ baseApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
 
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.authorization = `Bearer ${token}`; // ✅ en minúscula
   }
 
   return config;
@@ -23,7 +23,7 @@ baseApi.interceptors.response.use(
     // ⚠️ Si el backend devuelve { code: 403 } dentro de un 200, detectalo manualmente
     if (response.data?.code === 403) {
       toast.warning("No tienes permisos para acceder a esta sección.");
-      localStorage.removeItem('token'); // Opcional: limpiar token
+      localStorage.removeItem('token');
       return Promise.reject({ response });
     }
 
@@ -32,14 +32,18 @@ baseApi.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
 
+    if (status === 400) {
+      toast.error("Solicitud inválida. Verifica los datos enviados.");
+    }
+
     if (status === 401) {
       toast.error("Tu sesión ha expirado. Por favor inicia sesión nuevamente.");
-      localStorage.removeItem('token'); // Opcional: limpiar token
+      localStorage.removeItem('token');
     }
 
     if (status === 403) {
       toast.warning("No tienes permisos para acceder a esta sección.");
-      localStorage.removeItem('token'); // Opcional: limpiar token
+      localStorage.removeItem('token');
     }
 
     return Promise.reject(error);

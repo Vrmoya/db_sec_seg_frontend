@@ -1,6 +1,6 @@
 // src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import baseApi from '../../services/baseApiCore'; // ✅ usamos baseApiCore sin interceptores
+import baseApi from '../../services/baseApi'; 
 
 const storedToken = localStorage.getItem('token');
 const storedUser = localStorage.getItem('user');
